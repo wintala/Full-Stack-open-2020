@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import personService from "./services/persons"
 
 
@@ -76,10 +75,10 @@ const App = () => {
   const [message, setMessage] = useState({text: null, cssClass: null})
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+    .allPersons()
       .then(response => {
-        setPersons(response.data)
+        setPersons(response)
       })
   }, [])
 
@@ -91,6 +90,9 @@ const App = () => {
       .then(returnedPerson => {
       setPersons(persons.concat(returnedPerson))
       setMessage({text: `Added ${newName}`, cssClass: "notification"})
+    })
+    .catch(error => {
+      setMessage({text: error.response.data.error, cssClass: "error"})
     })
   }
 
@@ -121,14 +123,15 @@ const App = () => {
     else if(! numbers.includes(newNumber)) {
       updateNumber(newName, newNumber)
     } 
-    else {setMessage({text: `${newName} is already in phonebook`, cssClass: "fail"})}              
+    else {setMessage({text: `Cannot change ${newName}'s number. Number ${newNumber} is already taken`, cssClass: "fail"})}              
   }
 
   const handlePersonDelete = id => {
-    if (window.confirm(`Delete ${persons.find(x => x.id === id).name}?`)) {
+    const nameToBeDeleted = persons.find(x => x.id === id).name
+    if (window.confirm(`Delete ${nameToBeDeleted}?`)) {
     personService.deletePerson(id)
     setPersons(persons.filter(x => x.id !== id))
-    setMessage({text: `${newName} deleted from phonebook`, cssClass: "notification"})
+    setMessage({text: `${nameToBeDeleted} deleted from phonebook`, cssClass: "notification"})
     }
   }
 
