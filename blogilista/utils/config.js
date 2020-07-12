@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-let MONGODB_URI = process.env.MONGO_URI
+let MONGODB_URI = process.env.MONGODB_URI
 let PORT = process.env.PORT
 
 if (process.env.NODE_ENV === 'test') {
